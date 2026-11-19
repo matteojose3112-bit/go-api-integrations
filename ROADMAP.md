@@ -12,15 +12,19 @@ Items are complete only when implemented and verified.
 - [x] Add webhook ingestion endpoint.
 - [x] Add in-memory idempotency by provider and event ID.
 - [x] Add event listing with provider filter.
-- [ ] Pass GitHub Actions tests and build on the latest commit.
+- [x] Pass GitHub Actions tests and build on the latest verified commit.
 
 ## Phase 2 — Deployment
 
-- [x] Prepare Render free-plan Blueprint and health check.
-- [ ] Obtain authorization to create the Render service.
-- [ ] Deploy API and verify health endpoint.
-- [ ] Publish live API URL and deployment details.
+- [x] Prepare Render deployment configuration.
+- [x] Create the Render free-plan web service in My Workspace.
+- [x] Deploy API and verify the public health endpoint.
+- [x] Publish live API URL and deployment details.
 - [ ] Add API examples or a small interactive request client.
+
+**Live API:** https://relayops-go-api.onrender.com  
+**Health:** https://relayops-go-api.onrender.com/health  
+**Render dashboard:** https://dashboard.render.com/web/srv-dbvmqt60tbcc7390b2q0
 
 ## Phase 3 — Reliability and integrations
 
