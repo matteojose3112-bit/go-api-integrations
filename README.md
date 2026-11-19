@@ -1,80 +1,89 @@
 # Go API Integrations
 
-> A small, documented REST API demonstrating reliable service endpoints and practical business-system integration patterns.
+> A small REST integration hub for normalizing CRM contact data and accepting idempotent webhook events.
 
-**Status:** Planning / initial documentation  
-**Primary language:** Go  
-**Live demo:** Not deployed yet  
-**Deployment target:** Render web service (planned)
+**Status:** Go API MVP implemented; CI verification pending  
+**Language:** Go 1.23  
+**Framework:** Go standard library `net/http`  
+**Deployment configuration:** Render free web service blueprint prepared  
+**Live API:** Pending deployment authorization and verification
 
 ## Overview
 
-Business applications frequently need lightweight services to validate incoming data, expose consistent endpoints, and connect otherwise separate tools.
+RelayOps API demonstrates a lightweight integration layer for business systems. It exposes a health endpoint, a contact-normalization endpoint, and a webhook ingestion endpoint with duplicate-event detection.
 
-This repository is a portfolio project intended to demonstrate practical, maintainable software built around a recognizable business use case. The capabilities below describe the planned scope; they should not be interpreted as already implemented.
+The project intentionally uses Go's standard library to keep the service small, portable, and easy to audit.
 
-## Intended users
+## Endpoints
 
-Developers and small teams needing lightweight APIs, integration prototypes, and backend services.
+| Method | Endpoint | Purpose |
+|---|---|---|
+| GET | `/health` | Service health check |
+| POST | `/api/v1/contacts/normalize` | Trim and normalize contact name, email, and company |
+| POST | `/api/v1/webhooks/ingest` | Accept and deduplicate webhook events |
+| GET | `/api/v1/events` | List events, optionally filtered by provider |
 
-## Planned capabilities
+### Normalize a contact
 
-- Versioned REST endpoints
-- Health and readiness checks
-- Structured request validation and JSON responses
-- Webhook intake pattern with safe logging
-- Automated tests and API documentation
+```bash
+curl -X POST http://localhost:8080/api/v1/contacts/normalize \
+  -H "Content-Type: application/json" \
+  -d '{"name":" Ada  Lovelace ","email":" ADA@example.com ","company":" Analytical Engines "}'
+```
 
-## Technology
+### Ingest a webhook
 
-Go, net/http (or a minimal router if justified), standard testing tools, and JSON over HTTP.
+```bash
+curl -X POST http://localhost:8080/api/v1/webhooks/ingest \
+  -H "Content-Type: application/json" \
+  -d '{"provider":"crm","event_id":"evt-001","event_type":"contact.created","payload":{"contact_id":42}}'
+```
 
-The implementation will favor a small, understandable dependency set and documented setup steps. Final versions and infrastructure choices will be recorded as they are selected.
+A first event returns HTTP 202. Replaying the same provider/event ID returns HTTP 200 with `duplicate: true`.
 
-## Planned project structure
+## Run locally
+
+Requires Go 1.23 or newer.
+
+```bash
+go test ./...
+go run ./cmd/api
+```
+
+The API listens on port 8080 by default. Set `PORT` to override it.
+
+## Project structure
 
 ```text
 go-api-integrations/
-├── cmd/api/ — application entry point
-├── internal/ — handlers, services, and validation
-├── tests/ — automated tests
-├── docs/ — API contract and integration notes
-├── deploy/ — deployment configuration
+├── cmd/api/main.go
+├── internal/api/
+│   ├── router.go
+│   └── router_test.go
+├── .github/workflows/ci.yml
+├── go.mod
+├── render.yaml
 ├── README.md
 ├── ROADMAP.md
 └── CHANGELOG.md
 ```
 
-The exact structure may evolve as implementation begins.
+## Quality and deployment
 
-## Getting started
+- Unit and HTTP-handler tests use Go's built-in `testing` and `httptest` packages.
+- GitHub Actions runs `go test ./...` and `go build ./...`.
+- `render.yaml` defines a free-plan Go web service with a `/health` health check.
 
-The application is not implemented yet, so installation and run instructions will be added with the first working milestone. No commands are provided here that would imply functionality exists before it does.
+The Render blueprint is prepared, but no additional Render service has been created yet. The live API URL will be published after deployment is explicitly authorized and verified.
 
-## Demo and deployment
+## Current limitations
 
-The public demonstration is planned for **Render web service (planned)**. The live URL will be added here after deployment and verification.
+- Webhook events are stored in memory and are lost when the process restarts.
+- No persistent database, queue, authentication, or provider-specific signature verification is included.
+- The API is a demonstration integration layer, not a production webhook receiver.
+- Request bodies are size-limited and unknown JSON fields are rejected.
 
-## Quality approach
+## Roadmap and changelog
 
-- Automated tests for core business logic.
-- Synthetic examples instead of private or customer data.
-- Clear validation and error handling.
-- Reproducible setup and deployment instructions.
-- Documentation kept aligned with the actual code.
-
-## Roadmap
-
-See [ROADMAP.md](ROADMAP.md) for planned milestones.
-
-## Changelog
-
-See [CHANGELOG.md](CHANGELOG.md) for project history.
-
-## Portfolio outcomes
-
-Demonstrates Go fundamentals, HTTP services, API design, validation, testing, and integration patterns.
-
-## Project status
-
-This repository currently establishes the project definition and documentation baseline. Features, screenshots, test results, and deployment links will be added only after they exist and have been verified.
+- [Roadmap](ROADMAP.md)
+- [Changelog](CHANGELOG.md)
