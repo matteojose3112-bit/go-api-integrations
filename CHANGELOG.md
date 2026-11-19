@@ -1,21 +1,21 @@
 # Changelog
 
-All notable changes to this project will be documented here.
+All notable changes to this project are documented here.
 
-This project follows a lightweight Keep a Changelog-style format. Until a first release is published, work is tracked under **Unreleased**.
-
-## [Unreleased]
+## [Unreleased] — RelayOps API MVP
 
 ### Added
-- Initial project scope and intended audience documented.
-- Initial README, roadmap, and changelog created.
-- Planned first milestone: Create a minimal HTTP service with health endpoint, structured responses, and tests.
+- Go 1.23 module and standard-library HTTP server.
+- Health endpoint and configurable `PORT`.
+- JSON request decoding with a 1 MiB body limit and unknown-field rejection.
+- Contact normalization endpoint with name and email validation.
+- Webhook ingestion endpoint with provider/event ID idempotency.
+- Event listing endpoint with optional provider filtering.
+- Unit and HTTP-handler tests using `testing` and `httptest`.
+- GitHub Actions workflow for tests and build.
+- Render free-plan Blueprint with health check.
 
-### Planned
-- Implement the core go api integrations workflow.
-- Add automated tests and reproducible sample data where applicable.
-- Publish and verify the public demonstration.
-
-### Notes
-- No application functionality is claimed as complete by this documentation-only baseline.
-- Release dates and version numbers will be added when actual releases are created.
+### Pending verification
+- Latest GitHub Actions test and build run.
+- Render service creation and live endpoint verification.
+- Durable event storage and provider signature verification.
