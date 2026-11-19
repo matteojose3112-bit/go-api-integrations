@@ -2,11 +2,12 @@
 
 > A small REST integration hub for normalizing CRM contact data and accepting idempotent webhook events.
 
-**Status:** Go API MVP implemented; CI verification pending  
+**Status:** MVP deployed and health check verified  
 **Language:** Go 1.23  
 **Framework:** Go standard library `net/http`  
-**Deployment configuration:** Render free web service blueprint prepared  
-**Live API:** Pending deployment authorization and verification
+**Hosting:** Render free web service  
+**Live API:** https://relayops-go-api.onrender.com  
+**Health check:** https://relayops-go-api.onrender.com/health
 
 ## Overview
 
@@ -26,7 +27,7 @@ The project intentionally uses Go's standard library to keep the service small, 
 ### Normalize a contact
 
 ```bash
-curl -X POST http://localhost:8080/api/v1/contacts/normalize \
+curl -X POST https://relayops-go-api.onrender.com/api/v1/contacts/normalize \
   -H "Content-Type: application/json" \
   -d '{"name":" Ada  Lovelace ","email":" ADA@example.com ","company":" Analytical Engines "}'
 ```
@@ -34,7 +35,7 @@ curl -X POST http://localhost:8080/api/v1/contacts/normalize \
 ### Ingest a webhook
 
 ```bash
-curl -X POST http://localhost:8080/api/v1/webhooks/ingest \
+curl -X POST https://relayops-go-api.onrender.com/api/v1/webhooks/ingest \
   -H "Content-Type: application/json" \
   -d '{"provider":"crm","event_id":"evt-001","event_type":"contact.created","payload":{"contact_id":42}}'
 ```
@@ -71,10 +72,11 @@ go-api-integrations/
 ## Quality and deployment
 
 - Unit and HTTP-handler tests use Go's built-in `testing` and `httptest` packages.
-- GitHub Actions runs `go test ./...` and `go build ./...`.
-- `render.yaml` defines a free-plan Go web service with a `/health` health check.
+- GitHub Actions runs `go test ./...` and `go build ./...`; the latest verified run passed.
+- Deployed to Render on the free plan from the `main` branch.
+- Public health endpoint was checked after deployment and returned `{"service":"relayops-api","status":"ok"}`.
 
-The Render blueprint is prepared, but no additional Render service has been created yet. The live API URL will be published after deployment is explicitly authorized and verified.
+**Render service:** [relayops-go-api](https://dashboard.render.com/web/srv-dbvmqt60tbcc7390b2q0)
 
 ## Current limitations
 
