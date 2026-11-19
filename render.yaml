@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: go-api-integrations
+    runtime: go
+    plan: free
+    buildCommand: go build -o app ./cmd/api
+    startCommand: ./app
+    healthCheckPath: /health
+    autoDeploy: true
